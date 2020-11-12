@@ -92,13 +92,11 @@ void Functions::toPostfix(string exp)
                 {
                     result += *it + ',';
                     it = operators.erase(it);
-                    ++i;
                 }
-                else
+                else if(*it == "(")
                 {
-                    ++i;
                     //result += *it + ',';
-                    operators.erase(it);
+                    it = operators.erase(it);
                     break;
                 }
             }
@@ -108,6 +106,16 @@ void Functions::toPostfix(string exp)
         {
             string pass(1, exp.at(i));
             operators.push_front(pass);
+        }
+    }
+    if (!operators.empty())
+    {
+        list<string>::iterator it;
+        for (it = operators.begin(); it != operators.end();)
+        {
+            result += *it;
+            result += ",";
+            it = operators.erase(it);
         }
     }
 }
