@@ -1,4 +1,6 @@
 #include "Functions.h"
+#include <list>
+#include <vector>
 
 bool Functions::checkParenthesis(string exp)
 {
@@ -18,9 +20,40 @@ bool Functions::checkParenthesis(string exp)
     return true;
 }
 
-bool Functions::checkOperatorRules(string)
+bool Functions::checkOperatorRules(string exp)
 {
-    return false;
+    for (int i = 0; i < exp.length(); i++)
+    {
+        if (exp.at(0) == '+' || exp.at(0) == '*' || exp.at(0) == '/' || exp.at(0) == '%' || exp.at(0) == '^')
+        {
+            return false;
+        }
+        else if (exp.at(0) == '-')
+        {
+            if (exp.length() > 1 && isdigit(exp.at(1)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        if (exp.at(i) == '+' || exp.at(i) == '-' || exp.at(i) == '*' || exp.at(i) == '/' || exp.at(i) == '%' || exp.at(i) == '^')
+        {
+            if (exp.at(i) == exp.at(exp.length()-1))
+            {
+                return false;
+            }
+            if (exp.at(i + 1) == ')')
+            {
+                return false;
+            }
+            if (exp.at(i - 1) == '(')
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 string Functions::removeSpaces(string exp)
@@ -34,4 +67,47 @@ string Functions::removeSpaces(string exp)
         }
     }
     return refactoredExp;
+}
+
+void Functions::toPostfix(string exp)
+{
+    string result = "";
+    list<string> operators;
+
+    for (int i = 0; i < exp.length(); i++)
+    {
+        if (isdigit(exp.at(i)))
+        {
+            result += exp.at(i);
+            result += ',';
+        }
+        else if (exp.at(i) == ')')
+        {
+            list<string>::iterator it;
+            list<string>::iterator its;
+            for (it = operators.begin(); it != operators.end();)
+            {
+                //cout << "Hello";
+                if (*it != "(")
+                {
+                    result += *it + ',';
+                    it = operators.erase(it);
+                    ++i;
+                }
+                else
+                {
+                    ++i;
+                    //result += *it + ',';
+                    operators.erase(it);
+                    break;
+                }
+            }
+            cout << "Loope break<-";
+        }
+        else 
+        {
+            string pass(1, exp.at(i));
+            operators.push_front(pass);
+        }
+    }
 }

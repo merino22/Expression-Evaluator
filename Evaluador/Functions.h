@@ -15,6 +15,7 @@ public:
 	bool checkParenthesis(string);
 	bool checkOperatorRules(string);
 	string removeSpaces(string);
+	void toPostfix(string);
 };
 #endif
 

@@ -18,10 +18,12 @@ int main() {
 		cout << "[Exp]>: ";
 		//cin.getline(expression, sizeof(expression));
 		getline(cin, expression);
-		if (funcs.checkParenthesis(expression) == true)
+		//string usable = " " + expression + " ";
+		if (funcs.checkParenthesis(expression) == true && funcs.checkOperatorRules(expression) == true)
 		{
-			string refactoredExp = funcs.removedSpaces(expression);
+			string refactoredExp = funcs.removeSpaces(expression);
 			cout << "Refactored Expression: " << refactoredExp;
+			funcs.toPostfix(expression);
 		}
 		else {
 			cout << "ERROR: Syntax Error, missing parenthesis.";
