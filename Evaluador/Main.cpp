@@ -11,7 +11,7 @@ int main() {
 	//char expression[100] = {0};
 	string expression = "";
 	Functions funcs;
-
+	cout << funcs.power(2, 2);
 	while (expression != "quit")
 	{
 		
@@ -23,7 +23,7 @@ int main() {
 		{
 			string refactoredExp = funcs.removeSpaces(expression);
 			cout << "Refactored Expression: " << refactoredExp;
-			funcs.toPostfix(expression);
+			funcs.toPostfix(refactoredExp);
 		}
 		else {
 			cout << "ERROR: Syntax Error, missing parenthesis.";

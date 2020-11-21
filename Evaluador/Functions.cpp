@@ -1,6 +1,7 @@
 #include "Functions.h"
 #include <list>
 #include <vector>
+#include <stack>
 
 bool Functions::checkParenthesis(string exp)
 {
@@ -69,28 +70,63 @@ string Functions::removeSpaces(string exp)
     return refactoredExp;
 }
 
+int Functions::operator^(const int& num)
+{
+    Functions temp(*this);
+    int res = 0;
+    res = pow((*this).x, num);
+    return res;
+}
+
+int Functions::power(int num1, int num2)
+{
+    return pow(num1, num2);
+}
+
 void Functions::toPostfix(string exp)
 {
     string result = "";
+    list<string> results;
     list<string> operators;
+    stack<int> operatorsx;
 
     for (int i = 0; i < exp.length(); i++)
     {
-        if (isdigit(exp.at(i)))
+        
+        if (i == 0 && exp.at(i) == '-')
         {
             result += exp.at(i);
-            result += ',';
+        }
+        else if (exp.at(i) == '-' && exp.at(i - 1) == '(')
+        {
+            result += exp.at(i);
+        }
+        else if (isdigit(exp.at(i)))
+        {
+            result += exp.at(i);
+            if (i + 1 <= exp.length()-1 && !isdigit(exp.at(i + 1)))
+            {
+                result += ',';
+            }
+            
         }
         else if (exp.at(i) == ')')
         {
             list<string>::iterator it;
             list<string>::iterator its;
+            //result += ',';
             for (it = operators.begin(); it != operators.end();)
             {
                 //cout << "Hello";
                 if (*it != "(")
                 {
                     result += *it + ',';
+                    /*
+                    if (result.at(result.length()-1) != ',')
+                    {
+                        result += ',';
+                    }
+                    */
                     it = operators.erase(it);
                 }
                 else if(*it == "(")
@@ -100,22 +136,38 @@ void Functions::toPostfix(string exp)
                     break;
                 }
             }
-            cout << "Loope break<-";
+            cout << "->Loop break<-";
         }
         else 
         {
+            //result += ',';
             string pass(1, exp.at(i));
             operators.push_front(pass);
         }
     }
     if (!operators.empty())
     {
+        //operators.pop_front();
+        if (result.at(result.length() - 1) != ',')
+        {
+            result += ',';
+        }
+        
         list<string>::iterator it;
         for (it = operators.begin(); it != operators.end();)
         {
-            result += *it;
-            result += ",";
+            if (operators.size() == 1)
+            {
+                result += *it;
+            }
+            else
+            {
+                result += *it;
+                result += ",";
+            }
+            
             it = operators.erase(it);
         }
     }
+    cout << "\nPostFix Result: " << result;
 }
