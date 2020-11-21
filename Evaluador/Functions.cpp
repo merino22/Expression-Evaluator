@@ -88,7 +88,7 @@ void Functions::toPostfix(string exp)
     string result = "";
     list<string> results;
     list<string> operators;
-    stack<int> operatorsx;
+    stack<string> operatorsx;
 
     for (int i = 0; i < exp.length(); i++)
     {
@@ -115,36 +115,75 @@ void Functions::toPostfix(string exp)
             list<string>::iterator it;
             list<string>::iterator its;
             //result += ',';
-            for (it = operators.begin(); it != operators.end();)
+            while (!operatorsx.empty())
             {
-                //cout << "Hello";
-                if (*it != "(")
+                if (operatorsx.top() != "(")
                 {
-                    result += *it + ',';
-                    /*
-                    if (result.at(result.length()-1) != ',')
-                    {
-                        result += ',';
-                    }
-                    */
-                    it = operators.erase(it);
+                    result += operatorsx.top() + ",";
+                    operatorsx.pop();
                 }
-                else if(*it == "(")
+                else if (operatorsx.top() == "(")
                 {
-                    //result += *it + ',';
-                    it = operators.erase(it);
+                    operatorsx.pop();
                     break;
                 }
+                
             }
+            
+            //for (it = operators.begin(); it != operators.end();)
+            //{
+            //    //cout << "Hello";
+            //    if (*it != "(")
+            //    {
+            //        result += *it + ',';
+            //        /*
+            //        if (result.at(result.length()-1) != ',')
+            //        {
+            //            result += ',';
+            //        }
+            //        */
+            //        it = operators.erase(it);
+            //    }
+            //    else if(*it == "(")
+            //    {
+            //        //result += *it + ',';
+            //        it = operators.erase(it);
+            //        break;
+            //    }
+            //}
+            
             cout << "->Loop break<-";
         }
         else 
         {
             //result += ',';
             string pass(1, exp.at(i));
-            operators.push_front(pass);
+            operatorsx.push(pass);
+            //operators.push_front(pass);
         }
     }
+    if (!operatorsx.empty())
+    {
+        if (result.at(result.length() - 1) != ',')
+        {
+            result += ',';
+        }
+
+        while (!operatorsx.empty())
+        {
+            if (operatorsx.size() == 1)
+            {
+                result += operatorsx.top();
+            }
+            else
+            {
+                result += operatorsx.top();
+                result += ",";
+            }
+            operatorsx.pop();
+        }
+    }
+    /*
     if (!operators.empty())
     {
         //operators.pop_front();
@@ -169,5 +208,6 @@ void Functions::toPostfix(string exp)
             it = operators.erase(it);
         }
     }
+    */
     cout << "\nPostFix Result: " << result;
 }
