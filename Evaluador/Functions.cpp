@@ -89,6 +89,7 @@ void Functions::toPostfix(string exp)
     list<string> results;
     list<string> operators;
     stack<string> operatorsx;
+    stack<precObj*>operatorsz;
 
     for (int i = 0; i < exp.length(); i++)
     {
@@ -112,57 +113,121 @@ void Functions::toPostfix(string exp)
         }
         else if (exp.at(i) == ')')
         {
-            list<string>::iterator it;
-            list<string>::iterator its;
+            //list<string>::iterator it;
+            //list<string>::iterator its;
             //result += ',';
-            while (!operatorsx.empty())
+            while (!operatorsz.empty())
             {
-                if (operatorsx.top() != "(")
+                if (operatorsz.top()->operatorC != '(')
                 {
-                    result += operatorsx.top() + ",";
-                    operatorsx.pop();
+                    cout << operatorsz.top()->operatorC;
+                    result += operatorsz.top()->operatorC;
+                    result += ',';
+                    operatorsz.pop();
                 }
-                else if (operatorsx.top() == "(")
+                else if (operatorsz.top()->operatorC == '(')
                 {
-                    operatorsx.pop();
+                    operatorsz.pop();
                     break;
                 }
                 
             }
             
-            //for (it = operators.begin(); it != operators.end();)
-            //{
-            //    //cout << "Hello";
-            //    if (*it != "(")
-            //    {
-            //        result += *it + ',';
-            //        /*
-            //        if (result.at(result.length()-1) != ',')
-            //        {
-            //            result += ',';
-            //        }
-            //        */
-            //        it = operators.erase(it);
-            //    }
-            //    else if(*it == "(")
-            //    {
-            //        //result += *it + ',';
-            //        it = operators.erase(it);
-            //        break;
-            //    }
-            //}
-            
             cout << "->Loop break<-";
         }
         else 
         {
-            //result += ',';
             string pass(1, exp.at(i));
+            precObj* temp = nullptr;
+            switch (exp.at(i))
+            {
+            case '(':
+                temp = new precObj(0, '(');
+                break;
+            case '^':
+                temp = new precObj(6, '^');
+                break;
+            case '*':
+                temp = new precObj(5, '*');
+                break;
+            case '/':
+                temp = new precObj(4, '/');
+                break;
+            case '%':
+                temp = new precObj(3, '%');
+                break;
+            case '+':
+                temp = new precObj(2, '+');
+                break;
+            case '-':
+                temp = new precObj(1, '-');
+                break;
+            }
+
+            if (operatorsz.empty())
+            {
+                operatorsz.push(temp);
+            }
+            else
+            {
+                while(!operatorsz.empty())
+                {
+                    if (operatorsz.top()->precedence > temp->precedence && temp->precedence != 0)
+                    {
+                        result += operatorsz.top()->operatorC;
+                        result += ',';
+                        operatorsz.pop();
+                    }
+                    else
+                    {
+                        operatorsz.push(temp);
+                        temp = nullptr;
+                        break;
+                    }
+
+                    if (temp != nullptr && !operatorsz.empty() && operatorsz.top()->precedence < temp->precedence)
+                    {
+                        operatorsz.push(temp);
+                        break;
+                    }
+
+                    if (operatorsz.empty() && temp != nullptr)
+                    {
+                        operatorsz.push(temp);
+                        temp = nullptr;
+                        break;
+                    }
+                }
+                
+            }
+
             operatorsx.push(pass);
+           // operatorsz.push(temp);
             //operators.push_front(pass);
         }
     }
-    if (!operatorsx.empty())
+    if (!operatorsz.empty())
+    {
+        if (result.at(result.length() - 1) != ',')
+        {
+            result += ',';
+        }
+
+        while (!operatorsz.empty())
+        {
+            if (operatorsz.size() == 1)
+            {
+                result += operatorsz.top()->operatorC;
+            }
+            else
+            {
+                result += operatorsz.top()->operatorC;
+                result += ',';
+            }
+            operatorsz.pop();
+        }
+    }
+    /*if (!operatorsx.empty())
     {
         if (result.at(result.length() - 1) != ',')
         {
@@ -182,32 +247,13 @@ void Functions::toPostfix(string exp)
             }
             operatorsx.pop();
         }
-    }
-    /*
-    if (!operators.empty())
+    }*/
+
+    while (!operatorsz.empty())
     {
-        //operators.pop_front();
-        if (result.at(result.length() - 1) != ',')
-        {
-            result += ',';
-        }
-        
-        list<string>::iterator it;
-        for (it = operators.begin(); it != operators.end();)
-        {
-            if (operators.size() == 1)
-            {
-                result += *it;
-            }
-            else
-            {
-                result += *it;
-                result += ",";
-            }
-            
-            it = operators.erase(it);
-        }
+        cout << "\n\nOperator: " << operatorsz.top()->operatorC;
+        cout << "\nPrecedence: " << operatorsz.top()->precedence;
+        operatorsz.pop();
     }
-    */
     cout << "\nPostFix Result: " << result;
 }

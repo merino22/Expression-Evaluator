@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <string.h>
+#include "PrecedenceObj.h"
 
 using namespace std;
 

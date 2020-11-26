@@ -11,7 +11,7 @@ int main() {
 	//char expression[100] = {0};
 	string expression = "";
 	Functions funcs;
-	cout << funcs.power(2, 2);
+	//cout << -10 - -2;
 	while (expression != "quit")
 	{
 		
