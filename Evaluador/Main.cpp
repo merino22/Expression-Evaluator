@@ -23,7 +23,8 @@ int main() {
 		{
 			string refactoredExp = funcs.removeSpaces(expression);
 			cout << "Refactored Expression: " << refactoredExp;
-			funcs.toPostfix(refactoredExp);
+			string postfixExpression = funcs.toPostfix(refactoredExp);
+			funcs.postfixToResult(postfixExpression);
 		}
 		else {
 			cout << "ERROR: Syntax Error, missing parenthesis.";

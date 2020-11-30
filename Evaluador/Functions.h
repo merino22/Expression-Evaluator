@@ -19,10 +19,11 @@ public:
 	bool checkParenthesis(string);
 	bool checkOperatorRules(string);
 	bool checkDecimalPoints(string);
+	void postfixToResult(string);
 	string removeSpaces(string);
 	int operator^(const int& num);
 	int power(int, int);
-	void toPostfix(string);
+	string toPostfix(string);
 };
 #endif
 

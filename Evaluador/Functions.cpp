@@ -72,6 +72,43 @@ bool Functions::checkDecimalPoints(string exp)
     return true;
 }
 
+void Functions::postfixToResult(string exp)
+{
+    int valueCount = 1;
+    /*for (int i = 0; i < exp.length(); i++)
+    {
+        if (exp.at(i) == ',')
+        {
+            valueCount++;
+        }
+    }*/
+    vector<string> values;
+    string temp = "";
+    for (int i = 0; i < exp.length(); i++)
+    {  
+        if (exp.at(i) != ',')
+        {
+            temp += exp.at(i);
+        }
+        else
+        {
+            values.push_back(temp);
+            temp = "";
+        }
+
+        if (i == exp.length() - 1)
+        {
+            values.push_back(temp);
+        }
+    }
+    cout << "\n";
+    for (auto& it : values)
+    {
+        cout << it << ',';
+    }
+    cout << "\n!Values are inside vector";
+}
+
 string Functions::removeSpaces(string exp)
 {
     string refactoredExp = "";
@@ -98,7 +135,7 @@ int Functions::power(int num1, int num2)
     return pow(num1, num2);
 }
 
-void Functions::toPostfix(string exp)
+string Functions::toPostfix(string exp)
 {
     string result = "";
     list<string> results;
@@ -243,27 +280,6 @@ void Functions::toPostfix(string exp)
             operatorsz.pop();
         }
     }
-    /*if (!operatorsx.empty())
-    {
-        if (result.at(result.length() - 1) != ',')
-        {
-            result += ',';
-        }
-
-        while (!operatorsx.empty())
-        {
-            if (operatorsx.size() == 1)
-            {
-                result += operatorsx.top();
-            }
-            else
-            {
-                result += operatorsx.top();
-                result += ",";
-            }
-            operatorsx.pop();
-        }
-    }*/
 
     while (!operatorsz.empty())
     {
@@ -272,4 +288,5 @@ void Functions::toPostfix(string exp)
         operatorsz.pop();
     }
     cout << "\nPostFix Result: " << result;
+    return result;
 }
