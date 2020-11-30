@@ -11,7 +11,7 @@ int main() {
 	//char expression[100] = {0};
 	string expression = "";
 	Functions funcs;
-	//cout << -10 - -2;
+	cout << .10 - -2;
 	while (expression != "quit")
 	{
 		
@@ -19,7 +19,7 @@ int main() {
 		//cin.getline(expression, sizeof(expression));
 		getline(cin, expression);
 		//string usable = " " + expression + " ";
-		if (funcs.checkParenthesis(expression) == true && funcs.checkOperatorRules(expression) == true)
+		if (funcs.checkParenthesis(expression) == true && funcs.checkOperatorRules(expression) == true && funcs.checkDecimalPoints(expression) == true)
 		{
 			string refactoredExp = funcs.removeSpaces(expression);
 			cout << "Refactored Expression: " << refactoredExp;

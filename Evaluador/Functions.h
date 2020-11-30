@@ -18,6 +18,7 @@ public:
 	Functions(int _x) : x(_x) {}
 	bool checkParenthesis(string);
 	bool checkOperatorRules(string);
+	bool checkDecimalPoints(string);
 	string removeSpaces(string);
 	int operator^(const int& num);
 	int power(int, int);

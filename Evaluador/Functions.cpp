@@ -57,6 +57,21 @@ bool Functions::checkOperatorRules(string exp)
     return true;
 }
 
+bool Functions::checkDecimalPoints(string exp)
+{
+    for (int i = 0; i < exp.length(); i++)
+    {
+        if (i != exp.length()-1)
+        {
+            if (exp.at(i) == '.' && !isdigit(exp.at(i + 1)))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 string Functions::removeSpaces(string exp)
 {
     string refactoredExp = "";
@@ -102,10 +117,10 @@ void Functions::toPostfix(string exp)
         {
             result += exp.at(i);
         }
-        else if (isdigit(exp.at(i)))
+        else if (isdigit(exp.at(i)) || exp.at(i) == '.')
         {
             result += exp.at(i);
-            if (i + 1 <= exp.length()-1 && !isdigit(exp.at(i + 1)))
+            if (i + 1 <= exp.length()-1 && !isdigit(exp.at(i + 1)) && exp.at(i+1) != '.')
             {
                 result += ',';
             }
@@ -167,6 +182,7 @@ void Functions::toPostfix(string exp)
             if (operatorsz.empty())
             {
                 operatorsz.push(temp);
+               
             }
             else
             {
