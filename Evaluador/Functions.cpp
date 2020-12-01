@@ -102,11 +102,54 @@ void Functions::postfixToResult(string exp)
         }
     }
     cout << "\n";
-    for (auto& it : values)
+
+    vector<string>::iterator it;
+    int x = 0;
+    int y = 0;
+    int result = 0;
+    char operation;
+    for (it = values.begin(); it != values.end(); ++it)
     {
-        cout << it << ',';
+        
+        if (*it == "*" || *it == "^" || *it == "/" || *it == "%" || *it == "+" || *it == "-")
+        {
+            operation = (*it).at(0);
+            //it = values.erase(it);
+            it = prev(it);
+            y = stoi(*it);
+            it = prev(it);
+            x = stoi(*it);
+            it = values.erase(it);
+            it = values.erase(it);
+
+            switch (operation)
+            {
+                case '^':
+                    result = pow(x, y);
+                break;
+                case '*':
+                    result = x * y;
+                break;
+                case '/':
+                    result = x / y;
+                break;
+                case '%':
+                    result = x % y;
+                break;
+                case '+':
+                    result = x + y;
+                break;
+                case '-':
+                    result = x - y;
+                    break;
+            }
+            *it = to_string(result);
+            //it = next(it);
+            //cout << "X: " << x;
+            //cout << "Y: " << y;
+        }
     }
-    cout << "\n!Values are inside vector";
+    cout << "Postfix Result: " << values.front();
 }
 
 string Functions::removeSpaces(string exp)
