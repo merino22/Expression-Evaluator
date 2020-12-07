@@ -8,23 +8,48 @@
 using namespace std;
 
 int main() {
-	//char expression[100] = {0};
-	string expression = "";
+	auto expression = ""s;//---> VC 14
 	Functions funcs;
-	cout << .10 - -2;
+
 	while (expression != "quit")
 	{
-		
+		int x = 0;
 		cout << "[Exp]>: ";
 		//cin.getline(expression, sizeof(expression));
 		getline(cin, expression);
-		//string usable = " " + expression + " ";
-		if (funcs.checkParenthesis(expression) == true && funcs.checkOperatorRules(expression) == true && funcs.checkDecimalPoints(expression) == true)
+		static_assert(true,"Wrong character");
+		if (expression == "quit")
 		{
-			string refactoredExp = funcs.removeSpaces(expression);
-			cout << "Refactored Expression: " << refactoredExp;
-			string postfixExpression = funcs.toPostfix(refactoredExp);
-			funcs.postfixToResult(postfixExpression);
+			break;
+		}
+		//string usable = " " + expression + " ";
+		if (funcs.checkParenthesis(expression) == true )
+		{
+			if (funcs.checkOperatorRules(expression) == true)
+			{
+				if (funcs.checkDecimalPoints(expression) == true)
+				{
+					if (funcs.checkInvalidChars(expression) == true)
+					{
+						string refactoredExp = funcs.removeSpaces(expression);
+						cout << "Refactored Expression: " << refactoredExp;
+						string postfixExpression = funcs.toPostfix(refactoredExp);
+						funcs.postfixToResult(postfixExpression);
+					}
+					else
+					{
+						cout << "ERROR: Syntax Error, alphanumeric characters encountered.";
+					}
+				}
+				else
+				{
+					cout << "ERROR: Syntax Error,  float value mismatch";
+				}
+			}
+			else
+			{
+				cout << "ERROR: Syntax Error, operator mismatch";
+			}
 		}
 		else {
 			cout << "ERROR: Syntax Error, missing parenthesis.";

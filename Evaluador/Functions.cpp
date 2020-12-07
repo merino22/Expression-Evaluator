@@ -2,10 +2,52 @@
 #include <list>
 #include <vector>
 #include <stack>
+#include <sstream>
+
+template <typename t> std::string type_name();
+
+template<typename T> // ---> VC 14, 17
+constexpr T pi = T(3.141592653589793238462643383); // ---> VC 14
+
+template<typename T>
+constexpr T e = T(2.718281828);
+
+auto sum = [](auto x, auto y) {return x + y; }; //---> VC 14
+
+static bool isFloatNumber(const std::string& string) {
+    std::string::const_iterator it = string.begin();
+    bool decimalPoint = false;
+    int minSize = 0;
+    if (string.size() > 0 && (string[0] == '-' || string[0] == '+')) {
+        it++;
+        minSize++;
+    }
+    while (it != string.end()) {
+        if (*it == '.') {
+            if (!decimalPoint) decimalPoint = true;
+            else break;
+        }
+        else if (!std::isdigit(*it) && ((*it != 'f') || it + 1 != string.end() || !decimalPoint)) {
+            break;
+        }
+        ++it;
+    }
+    return string.size() > minSize && it == string.end();
+}
+
+
+bool isFloat(string s) {
+    istringstream iss(s);
+    float dummy;
+    iss >> noskipws >> dummy;
+    return iss && iss.eof();     // Result converted to bool
+}
 
 bool Functions::checkParenthesis(string exp)
 {
     int leftPar = 0, rightPar = 0;
+
+    
     for (int i = 0; i < exp.length(); i++)
     {
         if (exp.at(i) == '(') {
@@ -35,6 +77,14 @@ bool Functions::checkOperatorRules(string exp)
             {
                 return true;
             }
+            else if (exp.length() > 2 && exp.at(i + 1) == 'p' && exp.at(i + 2) == 'i')
+            {
+                return true;
+            }
+            else if (exp.length() > 1 && exp.at(i + 1) == 'e')
+            {
+                return  true;
+            }
             return false;
         }
 
@@ -48,7 +98,7 @@ bool Functions::checkOperatorRules(string exp)
             {
                 return false;
             }
-            if (exp.at(i - 1) == '(')
+            if (exp.at(i - 1) == '(' && exp.at(i) != '-')
             {
                 return false;
             }
@@ -72,7 +122,23 @@ bool Functions::checkDecimalPoints(string exp)
     return true;
 }
 
-void Functions::postfixToResult(string exp)
+bool Functions::checkInvalidChars(string exp)
+{
+    for (int i = 0; i < exp.length(); i++)
+    {
+        if (exp.at(i) != 'p' && exp.at(i) != 'i' && exp.at(i) != 'e' && isalpha(exp.at(i)))
+        {
+            return false;
+        }
+        if (i != exp.length()-1 && exp.at(i) == 'p' && exp.at(i + 1) == 'i')
+        {
+            return true;
+        }
+    }
+    return true;
+}
+
+void Functions::postfixToResult(string exp) //---> VC 17
 {
     int valueCount = 1;
     /*for (int i = 0; i < exp.length(); i++)
@@ -104,51 +170,106 @@ void Functions::postfixToResult(string exp)
     cout << "\n";
 
     vector<string>::iterator it;
-    int x = 0;
-    int y = 0;
-    int result = 0;
+    auto x = 0, y = 0;  // ---> VC 11
+    auto dx = 0.0, dy = 0.0; // ---> VC 11
+    auto result =0; // ---> VC 11
+    auto dresult = 0.0;
     char operation;
+    bool isFloatx = false;
+    string dot = ".";
     for (it = values.begin(); it != values.end(); ++it)
     {
         
         if (*it == "*" || *it == "^" || *it == "/" || *it == "%" || *it == "+" || *it == "-")
         {
+            
             operation = (*it).at(0);
             //it = values.erase(it);
             it = prev(it);
-            y = stoi(*it);
-            it = prev(it);
-            x = stoi(*it);
+            if ((*it).find(".") != string::npos) // ---> VC 11
+            {
+                dy = stod(*it);
+                it = prev(it);
+                dx = stof(*it);
+                isFloatx = true;
+            }
+            else
+            {
+                y = stoi(*it);
+                it = prev(it);
+                if ((*it).find(".") != string::npos) // ---> VC 11
+                {
+                    dx = stof(*it);
+                    dy = y;
+                    isFloatx = true;
+                }
+                else
+                {
+                    x = stoi(*it);
+                }
+            }
+            
             it = values.erase(it);
             it = values.erase(it);
 
-            switch (operation)
+            if (isFloatx == false)
             {
+                switch (operation)
+                {
                 case '^':
                     result = pow(x, y);
-                break;
+                    break;
                 case '*':
                     result = x * y;
-                break;
+                    break;
                 case '/':
                     result = x / y;
-                break;
+                    break;
                 case '%':
                     result = x % y;
-                break;
+                    break;
                 case '+':
                     result = x + y;
-                break;
+                    break;
                 case '-':
                     result = x - y;
                     break;
+                }
+                *it = to_string(result);
             }
-            *it = to_string(result);
+            else
+            {
+                switch (operation)
+                {
+                case '^':
+                    dresult = pow(dx, dy);
+                    break;
+                case '*':
+                    dresult = dx * dy;
+                    break;
+                case '/':
+                    dresult = dx / dy;
+                    break;
+                case '%':
+                    dresult = (int)dx % (int)dy;
+                    break;
+                case '+':
+                    dresult = dx + dy;
+                    break;
+                case '-':
+                    dresult = dx - dy;
+                    break;
+                }
+                *it = to_string(dresult);
+            }
+            
+            
             //it = next(it);
             //cout << "X: " << x;
             //cout << "Y: " << y;
         }
     }
+
     cout << "Postfix Result: " << values.front();
 }
 
@@ -197,6 +318,10 @@ string Functions::toPostfix(string exp)
         {
             result += exp.at(i);
         }
+        else if (exp.at(i) == '-' && !isdigit(exp.at(i-1)) && exp.at(i-1) != 'i' && exp.at(i-1) != 'e' && exp.at(i) != '.')
+        {
+            result += exp.at(i);
+        }
         else if (isdigit(exp.at(i)) || exp.at(i) == '.')
         {
             result += exp.at(i);
@@ -205,6 +330,23 @@ string Functions::toPostfix(string exp)
                 result += ',';
             }
             
+        }
+        else if (exp.at(i) == 'e')
+        {
+            result += to_string(e<float>);
+            if (i + 1 <= exp.length() - 1)
+            {
+                result += ',';
+            }
+        }
+        else if (exp.at(i) == 'p')
+        {
+            result += to_string(pi<float>);
+            if (i + 1 <= exp.length() - 1)
+            {
+                result += ',';
+            }
+            i++;
         }
         else if (exp.at(i) == ')')
         {
@@ -233,36 +375,35 @@ string Functions::toPostfix(string exp)
         else 
         {
             string pass(1, exp.at(i));
-            precObj* temp = nullptr;
+            precObj* temp = nullptr; // ---> VC 11
             switch (exp.at(i))
             {
             case '(':
-                temp = new precObj(0, '(');
+                temp = new precObj{ 0, '(' }; // ---> VC 11
                 break;
             case '^':
-                temp = new precObj(6, '^');
+                temp = new precObj{ 6, '^' };
                 break;
             case '*':
-                temp = new precObj(5, '*');
+                temp = new precObj{5, '*'};
                 break;
             case '/':
-                temp = new precObj(4, '/');
+                temp = new precObj{ 4, '/' };
                 break;
             case '%':
-                temp = new precObj(3, '%');
+                temp = new precObj{3, '%'};
                 break;
             case '+':
-                temp = new precObj(2, '+');
+                temp = new precObj{ 2, '+' };
                 break;
             case '-':
-                temp = new precObj(1, '-');
+                temp = new precObj{ 1, '-' };
                 break;
             }
 
             if (operatorsz.empty())
             {
-                operatorsz.push(temp);
-               
+                operatorsz.push(temp);    
             }
             else
             {
@@ -324,12 +465,6 @@ string Functions::toPostfix(string exp)
         }
     }
 
-    while (!operatorsz.empty())
-    {
-        cout << "\n\nOperator: " << operatorsz.top()->operatorC;
-        cout << "\nPrecedence: " << operatorsz.top()->precedence;
-        operatorsz.pop();
-    }
     cout << "\nPostFix Result: " << result;
     return result;
 }

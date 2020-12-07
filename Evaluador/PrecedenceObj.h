@@ -6,12 +6,11 @@ class precObj
 {
 public:
 	precObj() {}
-	int precedence = 0;
-	char operatorC = ' ';
+	int precedence;
+	char operatorC;
 	precObj(int pre, char oper) : precedence(pre), operatorC(oper) {}
 	void setOperator(char oper);
 	void setPrecedence(int prec);
-	
 };
 
 #endif
