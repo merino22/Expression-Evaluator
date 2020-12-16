@@ -2,7 +2,7 @@
 #ifndef PRECEDENCEOBJ_H
 #define PRECEDENCEOBJ_H
 
-class precObj
+class [[nodiscard]]precObj //---> VC 17
 {
 public:
 	precObj() {}

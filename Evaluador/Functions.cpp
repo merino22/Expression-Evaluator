@@ -6,15 +6,15 @@
 
 template <typename t> std::string type_name();
 
-template<typename T> // ---> VC 14, 17
+template<typename T> // ---> VC 14
 constexpr T pi = T(3.141592653589793238462643383); // ---> VC 14
 
 template<typename T>
-constexpr T e = T(2.718281828);
+constexpr T e = T(2.718281828); //---> VC 14
 
-auto sum = [](auto x, auto y) {return x + y; }; //---> VC 14
+auto sum = [](auto x, auto y) {x = x + y; return x; }; //---> VC 14
 
-static bool isFloatNumber(const std::string& string) {
+static bool isFloatNumber(const std::string& string) noexcept(false) { //---> VC 17
     std::string::const_iterator it = string.begin();
     bool decimalPoint = false;
     int minSize = 0;
@@ -36,14 +36,14 @@ static bool isFloatNumber(const std::string& string) {
 }
 
 
-bool isFloat(string s) {
+bool isFloat(string s) noexcept(false) {
     istringstream iss(s);
-    float dummy;
-    iss >> noskipws >> dummy;
+    [[maybe_unused]]float floatx; // ---> VC 17
+    iss >> noskipws >> floatx;
     return iss && iss.eof();     // Result converted to bool
 }
 
-bool Functions::checkParenthesis(string exp)
+bool Functions::checkParenthesis(string exp)noexcept(false)//---> VC 17
 {
     int leftPar = 0, rightPar = 0;
 
@@ -63,8 +63,9 @@ bool Functions::checkParenthesis(string exp)
     return true;
 }
 
-bool Functions::checkOperatorRules(string exp)
+bool Functions::checkOperatorRules(string exp) noexcept(false)//---> VC 17
 {
+    bool check = false;
     for (int i = 0; i < exp.length(); i++)
     {
         if (exp.at(0) == '+' || exp.at(0) == '*' || exp.at(0) == '/' || exp.at(0) == '%' || exp.at(0) == '^')
@@ -75,19 +76,26 @@ bool Functions::checkOperatorRules(string exp)
         {
             if (exp.length() > 1 && isdigit(exp.at(1)))
             {
-                return true;
+                check = true;
             }
             else if (exp.length() > 2 && exp.at(i + 1) == 'p' && exp.at(i + 2) == 'i')
             {
-                return true;
+                check = true;
             }
             else if (exp.length() > 1 && exp.at(i + 1) == 'e')
             {
-                return  true;
+                check = true;
             }
             return false;
         }
 
+        if (exp.at(i) == '+' || exp.at(i) == '-' || exp.at(i) == '*' || exp.at(i) == '/' || exp.at(i) == '%' || exp.at(i) == '^')
+        {
+            if (exp.at(i + 1) == '+' || exp.at(i + 1) == '-' || exp.at(i + 1) == '*' || exp.at(i + 1) == '/' || exp.at(i + 1) == '%' || exp.at(i + 1) == '^')
+            {
+                return false;
+            }
+        }
         if (exp.at(i) == '+' || exp.at(i) == '-' || exp.at(i) == '*' || exp.at(i) == '/' || exp.at(i) == '%' || exp.at(i) == '^')
         {
             if (exp.at(i) == exp.at(exp.length()-1))
@@ -107,7 +115,7 @@ bool Functions::checkOperatorRules(string exp)
     return true;
 }
 
-bool Functions::checkDecimalPoints(string exp)
+bool Functions::checkDecimalPoints(string exp)noexcept(false) //---> VC 17
 {
     for (int i = 0; i < exp.length(); i++)
     {
@@ -122,7 +130,22 @@ bool Functions::checkDecimalPoints(string exp)
     return true;
 }
 
-bool Functions::checkInvalidChars(string exp)
+bool Functions::checkInvalidDenominator(string exp)noexcept(false)
+{
+    for (int i = 0; i < exp.length(); i++)
+    {
+        if (exp.at(i) == '/' || exp.at(i) == '%')
+        {
+            if (exp.at(i + 1) == '0')
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Functions::checkInvalidChars(string exp)noexcept(false)//---> VC 17
 {
     for (int i = 0; i < exp.length(); i++)
     {
@@ -138,7 +161,7 @@ bool Functions::checkInvalidChars(string exp)
     return true;
 }
 
-void Functions::postfixToResult(string exp) //---> VC 17
+void Functions::postfixToResult(string exp)
 {
     int valueCount = 1;
     /*for (int i = 0; i < exp.length(); i++)
@@ -223,10 +246,26 @@ void Functions::postfixToResult(string exp) //---> VC 17
                     result = x * y;
                     break;
                 case '/':
-                    result = x / y;
+                    if (y != 0)
+                    {
+                        result = x / y;
+                    }
+                    else
+                    {
+                        result = 0;
+                    }
+                    
                     break;
                 case '%':
-                    result = x % y;
+                    if (y != 0)
+                    {
+                        result = x % y;
+                    }
+                    else
+                    {
+                        result = 0;
+                    }
+                    
                     break;
                 case '+':
                     result = x + y;
@@ -254,7 +293,7 @@ void Functions::postfixToResult(string exp) //---> VC 17
                     dresult = (int)dx % (int)dy;
                     break;
                 case '+':
-                    dresult = dx + dy;
+                    dresult = sum(dx, dy);
                     break;
                 case '-':
                     dresult = dx - dy;
@@ -273,7 +312,7 @@ void Functions::postfixToResult(string exp) //---> VC 17
     cout << "Postfix Result: " << values.front();
 }
 
-string Functions::removeSpaces(string exp)
+string Functions::removeSpaces(string exp)noexcept(false)//---> VC 17
 {
     string refactoredExp = "";
     for (int i = 0; i < exp.length(); i++) 
@@ -286,11 +325,10 @@ string Functions::removeSpaces(string exp)
     return refactoredExp;
 }
 
-int Functions::operator^(const int& num)
+int Functions::operator^(const int& num)noexcept(false) //---> VC 17
 {
     Functions temp(*this);
     int res = 0;
-    res = pow((*this).x, num);
     return res;
 }
 
@@ -385,7 +423,7 @@ string Functions::toPostfix(string exp)
                 temp = new precObj{ 6, '^' };
                 break;
             case '*':
-                temp = new precObj{5, '*'};
+                temp = new precObj{ 5, '*' };
                 break;
             case '/':
                 temp = new precObj{ 4, '/' };
@@ -467,4 +505,9 @@ string Functions::toPostfix(string exp)
 
     cout << "\nPostFix Result: " << result;
     return result;
+}
+
+inline int power(int, int) noexcept
+{
+    return 0;
 }

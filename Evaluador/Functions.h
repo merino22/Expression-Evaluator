@@ -9,21 +9,20 @@
 
 using namespace std;
 
-class Functions
+class [[nodiscard]]Functions //---> VC 17
 {
 public:
 	Functions() {}
-	int x;
-	Functions(int _x) : x(_x) {}
 
-	bool checkParenthesis(string);
+	bool checkParenthesis(string); 
 	bool checkOperatorRules(string);
 	bool checkDecimalPoints(string);
 	bool checkInvalidChars(string);
+	bool checkInvalidDenominator(string);
 	string removeSpaces(string);
 
-	int operator^(const int& num);
-	int power(int, int);
+	inline int operator^(const int& num); //---> VC 17
+	inline int power(int, int)noexcept(false); //---> VC 17
 
 	string toPostfix(string);
 	void postfixToResult(string);
