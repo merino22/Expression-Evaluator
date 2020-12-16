@@ -14,15 +14,17 @@ class [[nodiscard]]Functions //---> VC 17
 public:
 	Functions() {}
 
-	bool checkParenthesis(string); 
-	bool checkOperatorRules(string);
-	bool checkDecimalPoints(string);
-	bool checkInvalidChars(string);
-	bool checkInvalidDenominator(string);
-	string removeSpaces(string);
+	[[maybe_unused]]inline int operator^(const int& num)noexcept(false) //---> VC 17
+	{
+		Functions temp(*this);
+		int res = 0;
+		return res;
+	}
 
-	inline int operator^(const int& num); //---> VC 17
-	inline int power(int, int)noexcept(false); //---> VC 17
+	[[maybe_unused]]inline int power(int num1, int num2)noexcept(false) //---> VC 17
+	{
+		return pow(num1, num2);
+	}
 
 	string toPostfix(string);
 	void postfixToResult(string);

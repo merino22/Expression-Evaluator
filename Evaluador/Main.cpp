@@ -4,31 +4,33 @@
 #include <iterator>
 #include <list>
 #include "Functions.h"
+#include "Validations.h"
 
 using namespace std;
 
-int main() {
+[[nodiscard]]int main() {
 	auto expression = ""s;//---> VC 14
 	Functions funcs;
+	Validations validate;
 	while (expression != "quit")
 	{
 		int x = 0;
 		cout << "[Exp]>: ";
 		getline(cin, expression);
-		static_assert(true,"Wrong character");
+		static_assert(true, "Wrong character");
 		if (expression == "quit")
 		{
 			break;
 		}
-		if (funcs.checkParenthesis(expression) == true )
+		if (validate.checkParenthesis(expression) == true)
 		{
-			if (funcs.checkOperatorRules(expression) == true)
+			if (validate.checkOperatorRules(expression) == true)
 			{
-				if (funcs.checkDecimalPoints(expression) == true)
+				if (validate.checkDecimalPoints(expression) == true)
 				{
-					if (funcs.checkInvalidChars(expression) == true)
+					if (validate.checkInvalidChars(expression) == true)
 					{
-						string refactoredExp = funcs.removeSpaces(expression);
+						string refactoredExp = validate.removeSpaces(expression);
 						cout << "Refactored Expression: " << refactoredExp;
 						string postfixExpression = funcs.toPostfix(refactoredExp);
 						funcs.postfixToResult(postfixExpression);
@@ -54,5 +56,5 @@ int main() {
 
 		cout << "\n\n";
 	}
-	
+
 }
