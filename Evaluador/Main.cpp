@@ -13,6 +13,8 @@ using namespace std;
 	auto expression = ""s;//---> VC 14
 	Functions funcs;
 	Validations validate;
+
+	cout << "To quit application type 'quit'" << endl;
 	while (expression != "quit")
 	{
 		int x = 0;

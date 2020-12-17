@@ -265,8 +265,7 @@ void Functions::toPostfix(string exp)
                 }
                 
             }
-            
-            cout << "->Loop break<-";
+           
         }
         else 
         {
