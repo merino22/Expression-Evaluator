@@ -15,6 +15,7 @@ public:
 	bool checkDecimalPoints(string);
 	bool checkInvalidChars(string);
 	bool checkInvalidDenominator(string);
+	bool checkForPi(string);
 	string removeSpaces(string);
 };
 #endif

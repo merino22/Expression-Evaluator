@@ -50,6 +50,11 @@ bool Validations::checkInvalidDenominator(string exp)noexcept(false)
     return true;
 }
 
+bool Validations::checkForPi(string exp)noexcept(false)
+{
+    return true;
+}
+
 bool Validations::checkInvalidChars(string exp)noexcept(false)//---> VC 17
 {
     for (int i = 0; i < exp.length(); i++)
@@ -58,9 +63,21 @@ bool Validations::checkInvalidChars(string exp)noexcept(false)//---> VC 17
         {
             return false;
         }
-        if (i != exp.length() - 1 && exp.at(i) == 'p' && exp.at(i + 1) == 'i')
+        if (exp.at(0) == 'i')
         {
-            return true;
+            return false;
+        }
+        if (i != 0 && exp.at(i) == 'i' && exp.at(i - 1) != 'p')
+        {
+            return false;
+        }
+        if (i != exp.length() -1 && (exp.at(i) == 'p' && exp.at(i + 1) != 'i'))
+        {
+            return false;
+        }
+        if (exp.at(exp.length()-1) == 'p')
+        {
+            return false;
         }
     }
     return true;

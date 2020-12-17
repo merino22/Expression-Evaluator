@@ -146,6 +146,7 @@
     <ClCompile Include="Validations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="PrecedenceObj.h" />
     <ClInclude Include="Validations.h" />

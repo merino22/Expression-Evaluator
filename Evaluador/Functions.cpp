@@ -200,7 +200,7 @@ void Functions::postfixToResult(string exp)
     cout << "Postfix Result: " << values.front();
 }
 
-string Functions::toPostfix(string exp)
+void Functions::toPostfix(string exp)
 {
     string result = "";
     list<string> results;
@@ -273,8 +273,10 @@ string Functions::toPostfix(string exp)
             string pass(1, exp.at(i));
             // Variable temp used for new operator found in expression
             precObj* temp = nullptr; // ---> VC 11
+
+            //Depending on what operator is found create a new precedence object and save its char value and precedence
             switch (exp.at(i))
-            {                        //Depending on what operator is found create a new precedence object and save its char value and precedence
+            { 
             case '(':
                 temp = new precObj{ 0, '(' }; // ---> VC 11
                 break;
@@ -359,8 +361,8 @@ string Functions::toPostfix(string exp)
         }
     }
 
-    cout << "\nPostFix Result: " << result;
-    return result;
+    cout << "PostFix Result: " << result;
+    postfixToResult(result);
 }
 
 inline int power(int, int) noexcept

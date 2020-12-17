@@ -26,7 +26,7 @@ public:
 		return pow(num1, num2);
 	}
 
-	string toPostfix(string);
+	void toPostfix(string);
 	void postfixToResult(string);
 };
 #endif
